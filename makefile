@@ -4,7 +4,7 @@ LIBS=libs
 MAIN=main.c
 
 clean:
-	rm -rf *~ *# /headers/*~  /headers/*#  /src/*~  /src/*#  /docs/*~ /docs/*# *.out *.o
+	rm -rf *~ *# headers/*~  headers/*#  src/*~  src/*#  docs/*~ docs/*# *.out *.o
 
 all:  global elements_nodes import solver export
 	gcc $(MAIN) import.o global.o elements_nodes.o solver.o export.o -o main
