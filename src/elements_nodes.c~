@@ -5,23 +5,10 @@
 /********************************************/
 
 #include <stdlib.h>
-
-/**** Declaracao dos novos tipos ***/
-//sera importante declarar antes pois havera referencia circular entre os tipos
-typedef struct node node;
-typedef struct element element;
+#include "../headers/elements_nodes.h"
 
 
-/******* tipo Node e funcoes associadas *****/
-//---Estruturas de dados ---
-struct node{
-  double x,y; // coordenadas
-  double *val; //armazena o valor escalar do node. Null caso nao seja cond. de contorno
-  int n_elements; //indica o numero de elements se utilizam deste node
-  element **elements; // gera um vetor com n_elements posicoes apontando para os elementos que utilizam este node 
-};
-
-//----Funcoes-----
+//----Funcoes elements-----
 
 /********************/
 /* function: dist   */
@@ -38,26 +25,18 @@ double dist(node n, double x, double y);
 int hasElement(node n, element *e);
 
 
-
-/******* tipo element e funcoes associadas *****/
-//---Estruturas de dados ---
-struct element{
-  node *no[3]; // vetor de apontadores para os nos associados ao elemento
-  double p[3],q[3],r[3]; // parametros p q e r
-  double D; // parametro D
-  double eps; //permissividade do elemento
-};
-
-//----Funcoes-----
+//----Funcoes nodes-----
 
 /********************/
 /* function: organizeNodes   */
 /* input arg: node **no */
 /* output arg: int ret */
 /* description: organiza a matriz **no em sentido anti-horario*/
-int organizeNodes(node *no[3]);
+int organizeNodes(node **no);
 
 int setP(element *e);
 int setQ(element *e);
 int setR(element *e);
 int setParams(element *e);
+
+int generateElements(element **e, node **n);

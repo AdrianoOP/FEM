@@ -6,13 +6,8 @@
 
 #include <stdlib.h>
 
-/**** Declaracao dos novos tipos ***/
-//sera importante declarar antes pois havera referencia circular entre os tipos
-typedef struct node node;
-typedef struct element element;
+int pMsg(char *msg);
+int alocationMemoryError();
 
-/******* tipo Node e funcoes associadas *****/
-struct{
-  Double x,y; // coordenadas
-  Double *val;  
-}node;
+int nTotalElements;
+int nTotalNodes;
