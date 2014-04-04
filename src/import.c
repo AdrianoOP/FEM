@@ -258,26 +258,3 @@ int addElementToNode(node *n, element *e){
     }
     return(0);
 }
-
-int printMesh(element **e, node **n){
-    int i,j,k;
-    char buff[200];
-    //printing nodes:
-    printf("printing nodes...\n");
-    for(i=0;i<nTotalNodes;i++){
-        printf("node %d: ",i+1);
-        printf("P(%3.3f, %3.3f) ",n[i]->x,n[i]->y);
-        if((n[i]->val)!=NULL){
-            printf("V=%f",*(n[i]->val));
-        }else{
-            printf("V=null");
-        }
-        printf("\n%d elementos associados a este node: ",n[i]->n_elements);
-        printf("\n");
-    }
-    printf("printing elements...\n");
-    for(i=0;i<nTotalElements;i++){
-        printf("elemento %d eps=%.3e [F/m] D=%.2f\n",i,e[i]->eps,e[i]->D);
-    }
-    return(0);
-}

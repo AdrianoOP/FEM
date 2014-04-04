@@ -60,4 +60,10 @@ int organizeNodes(node *no[3]);
 int setP(element *e);
 int setQ(element *e);
 int setR(element *e);
-int setParams(element *e);
+int setParamsN(element *e);
+
+int generateElementsN(element ***e);
+
+int printMesh(element **e, node **n);
+
+int findLocalNodePos(element *e, node *no_global);

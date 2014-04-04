@@ -15,5 +15,3 @@ int clearBuff(char *buff);
 int createElement(char *buff, element *e,int pos, node **n);
 
 int addElementToNode(node *n, element *e);
-
-int printMesh(element **e, node **n);

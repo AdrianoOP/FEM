@@ -11,3 +11,5 @@ int alocationMemoryError();
 
 int nTotalElements;
 int nTotalNodes;
+
+double mod(double x);

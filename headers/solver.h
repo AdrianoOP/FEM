@@ -5,3 +5,8 @@
 /********************************************/
 
 #include <stdlib.h>
+
+
+int commomAssembly(double ***c, double ***v, node ***n, element ***e);
+
+int gaussSeidel(double **m, double ***ans,int size);

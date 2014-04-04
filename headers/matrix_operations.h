@@ -5,25 +5,11 @@
 /********************************************/
 
 #include <stdlib.h>
-#include <stdio.h>
-#include "../headers/elements_nodes.h"
-#include "../headers/global.h"
-#define DEBUG_MODE
 
-int pMsg(char *msg){
-  #ifdef DEBUG_MODE
-  printf(msg);
-  return(0);
-  #else
-  return(1);
-  #endif
-}
+double calculateDeterminant(double m[3][3]);
 
-int alocationMemoryError(){
-    pMsg("Erro de alocacao de memoria\n");
-    return(-1);
-}
+int printMatrix(double **m,int i_max,int j_max);
 
-double mod(double x){
-    return(x<0? -x : x);
-}
+double max1d(double *v, int size);
+
+double min1d(double *v, int size);

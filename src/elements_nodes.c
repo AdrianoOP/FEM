@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include "../headers/elements_nodes.h"
+#include "../headers/matrix_operations.h"
 
 extern int nTotalElements;
 extern int nTotalNodes;
@@ -38,33 +39,98 @@ int organizeNodes(node *no[3]){
     //para organizar os nos no sentido anti-horario, pode-se pensar que:
     //(1) - sera escolhido o node com menor valor de x caso haja dois menores valores, escolhe-se o menos valor de y
     //(2) - sera escolhido o segundo node com menor valor de x caso haja dois valores iguais, escolhe-se o menor valor de y
-    node *temp1,*temp2,*temp3;
-    int i,j,k,l;
-    double x1,x2,x3;
-    double y1,y2,y3;
-    double xmin=no[0]->x,ymin=no[0]->y;
+    node *temp;
+    int i,j=0;
+    double m[3][3];
     
+    while(1){
+        for(i=0;i<3;i++){
+            m[i][0]=no[i]->x; m[i][1]=no[i]->y; m[i][2]=1.0;
+        }
+        if((m[0][0]=calculateDeterminant(m))>0){
+            return(0);
+        }else{
+            j>2 ? j=0 : j++;
+            temp=no[j];
+            no[j]=no[0];
+            no[0]=temp;
+        }
+    }
     return(0);
 }
 
 int setP(element *e){
+    e->p[0]=(e->no[1]->x)*(e->no[2]->y)-(e->no[2]->x)*(e->no[1]->y);
+    e->p[1]=(e->no[2]->x)*(e->no[0]->y)-(e->no[0]->x)*(e->no[2]->y);
+    e->p[2]=(e->no[0]->x)*(e->no[1]->y)-(e->no[1]->x)*(e->no[0]->y);
+    e->D=e->p[0]+e->p[1]+e->p[2];
     return(0);
 }
 int setQ(element *e){
+    e->q[0]=e->no[1]->y - e->no[2]->y;
+    e->q[1]=e->no[2]->y - e->no[0]->y;
+    e->q[2]=e->no[0]->y - e->no[1]->y;
     return(0);
 }
 int setR(element *e){
+    e->r[0]=e->no[2]->x - e->no[1]->x;
+    e->r[1]=e->no[0]->x - e->no[2]->x;
+    e->r[2]=e->no[1]->x - e->no[0]->x;
     return(0);
 }
 
-int setParams(element *e){
+int setParamsN(element *e){
     int i,j,k;
     char buff[256];
-    if(organizeNodes<0)
+    if(organizeNodes(e->no)<0){
         return(-1);
-    //else
-    if(setP(e)<0 || setQ(e)<0 || setR(e)<0)
-        return(-1);
-
+    }
+    else{
+        if(setP(e)<0 || setQ(e)<0 || setR(e)<0)
+            return(-1);
+    }
     return(0);
+}
+
+int generateElementsN(element ***e){
+    int i,j,k;
+    for(i=0;i<nTotalElements;i++){
+        if(setParamsN((*e)[i])<0){
+            pMsg("erro ao gerar os elementos");
+        }
+    }
+    return(0);
+}
+
+int printMesh(element **e, node **n){
+    int i,j,k;
+    char buff[200];
+    //printing nodes:
+    printf("printing nodes...\n");
+    for(i=0;i<nTotalNodes;i++){
+        printf("node %d: ",i+1);
+        printf("P(%3.3f, %3.3f) ",n[i]->x,n[i]->y);
+        if((n[i]->val)!=NULL){
+            printf("V=%f",*(n[i]->val));
+        }else{
+            printf("V=null");
+        }
+        printf("\n%d elementos associados a este node: ",n[i]->n_elements);
+        printf("\n");
+    }
+    printf("printing elements...\n");
+    for(i=0;i<nTotalElements;i++){
+        printf("elemento %d eps=%.3e [F/m] D=%.2f\n",i,e[i]->eps,e[i]->D);
+    }
+    return(0);
+}
+
+
+int findLocalNodePos(element *e, node *no_global){
+    int i,j,k;
+    for(i=0;i<3;i++){
+        if(e->no[i]==no_global)
+            return(i);
+    }
+    return(-1);
 }
