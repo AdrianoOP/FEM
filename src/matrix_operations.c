@@ -22,7 +22,6 @@ double calculateDeterminant(double m[3][3]){
 
 int printMatrix(double **m,int i_max,int j_max){
     int i,j;
-    printf("matrix(%d,%d)=\n",i_max,j_max);
     for(i=0;i<i_max;i++){
         printf("|\t");
         for(j=0;j<j_max;j++){

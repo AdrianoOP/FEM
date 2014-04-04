@@ -9,7 +9,7 @@
 #include <string.h>
 #include "../headers/global.h"
 #include "../headers/elements_nodes.h"
-#define EPSILONO 1
+#define EPSILONO 8.85411878176e-12
 
 extern int nTotalNodes;
 extern int nTotalElements;

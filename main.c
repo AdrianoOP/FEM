@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "headers/elements_nodes.h"
 #include "headers/import.h"
 #include "headers/matrix_operations.h"
@@ -46,6 +47,7 @@ int main (int argc, char *argv[]){
 
     if(importMesh("input.inp", &nodes, &elements)<0)
         return(-1);
+    
     if(generateElements(&elements)<0)
         return(-1);
     
@@ -54,9 +56,16 @@ int main (int argc, char *argv[]){
     if(commomAssembly(&globalMatrix,&globalAnsVector,&nodes,&elements)<0)
         return(-1);
     
+    printf("\nmatriz problema:\n");
     printMatrix(globalMatrix,nTotalNodes,nTotalNodes);
     
     if(solve(globalMatrix,&globalAnsVector,nTotalNodes)<0)
         return(-1);
+    
+    printf("\nVetor Solucoes:\n");
+    printMatrix(globalAnsVector,nTotalNodes,1);
+    
+    printMesh(elements, nodes);
+    
     return(0);
 }

@@ -31,6 +31,7 @@ int commomAssembly(double ***c, double ***v, node ***n, element ***e){
         }else{ //caso a condicao seja newman
             (*v)[i]=malloc(sizeof(double));
             *((*v)[i])=0;
+            (*n)[i]->val=(*v)[i]; // matriz de solucao recebe o endereco do node
             for(j=0;j<nTotalNodes;j++){
                 //cria os coeficientes para cada linha
                 (*c)[i][j]=0;
@@ -95,18 +96,14 @@ int gaussSeidel(double **m, double ***ans,int size){
 
         //checa criterio de parada
         if(max1d(d,nTotalNodes)<MINERROR){
-            pMsg("Solution:\n");
             for(i=0;i<nTotalNodes;i++){
-                pMsg("|\t");
-                //if((*ans)[i]==NULL)
-                //    (*ans)[i]=malloc(sizeof(double));
-                //(**ans)[i]=x_est2[i];
-                sprintf(&buff,"%.3e\t|\n",x_est2[i]);
-                pMsg(buff);
+                if((*ans)[i]==NULL)
+                    (*ans)[i]=malloc(sizeof(double));
+                *((*ans)[i])=x_est2[i];
             }
+            sprintf(&buff,"convergencia em %d iteracoes\n",it);
+            pMsg(&buff);
             break;
-        }else{
-            
         }
     }
     free(x_est1);
