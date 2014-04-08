@@ -24,17 +24,27 @@ int main (int argc, char *argv[]){
   double **globalMatrix;//matriz global de coeficientes
   double **globalAnsVector;//Vetor global de respostas
     char buff[256];
+    char importFile[256];
     
     time_t ti,tf;
+    
+    switch(argc){
+        case 2:
+            strcpy(&importFile,argv[1]);
+            break;
+        default:
+            strcpy(&importFile,"input.inp");
+            break;
+    }
     
   //declaracao das funcoes principais em ordem de execucao
     int (*importMesh)(char *, node ***, element ***); //aqui as condicoes de contorno devem ser aplicadas
     int (*generateElements)(element ***); //aqui deverao ser calculados os parametros p,q,r,D
   //ao gerar os elementos deve-se lembrar de inicializar as funcoes principais tambem
-  int (*assemblyMatrix)(double ***, double ***, node ***, element ***);
-  int (*solve)(double **, double ***,int);
-  int (*atualizeNodes)(double *, node **);
-  int (*exportAnswer)(char *, element ***, node ***);
+    int (*assemblyMatrix)(double ***, double ***, node ***, element ***);
+    int (*solve)(double **, double ***,int);
+    int (*atualizeNodes)(double *, node **);
+    int (*exportAnswer)(char *, element ***, node ***);
    
   
     elements=malloc(sizeof(element *));
@@ -48,8 +58,10 @@ int main (int argc, char *argv[]){
     assemblyMatrix=&commomAssembly;
     solve=&gaussSeidel;
     exportAnswer=&exportForFile;
+  
     
-    if(importMesh("input.inp", &nodes, &elements)<0)
+    
+    if(importMesh(importFile, &nodes, &elements)<0)
         return(-1);
     
     if(generateElements(&elements)<0)
