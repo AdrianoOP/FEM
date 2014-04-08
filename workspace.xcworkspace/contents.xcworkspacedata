@@ -11,9 +11,6 @@
       location = "group:main.c">
    </FileRef>
    <FileRef
-      location = "group:headers/physics/electrostatics.h">
-   </FileRef>
-   <FileRef
       location = "group:headers/elements_nodes.h">
    </FileRef>
    <FileRef
