@@ -5,3 +5,5 @@
 /********************************************/
 
 #include <stdlib.h>
+
+int exportForFile(char *filename, element ***e, node ***n);

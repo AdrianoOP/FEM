@@ -50,3 +50,14 @@ double min1d(double *v, int size){
     }
     return(min);
 }
+
+int freeMatrix(double **m,int imax){
+    int i,j,k;
+    
+    for(i=0;i<imax;i++){
+        if(m[i]!=NULL){
+            free(m[i]);
+        }
+    }
+    return(0);
+}

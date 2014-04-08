@@ -38,6 +38,11 @@ double dist(node n, double x, double y);
 int hasElement(node n, element *e);
 
 
+int findLocalNodePos(element *e, node *no_global);
+
+
+int freeNodes(node ***n, int size);
+
 
 /******* tipo element e funcoes associadas *****/
 //---Estruturas de dados ---
@@ -66,4 +71,4 @@ int generateElementsN(element ***e);
 
 int printMesh(element **e, node **n);
 
-int findLocalNodePos(element *e, node *no_global);
+int freeElements(element ***e, int size);

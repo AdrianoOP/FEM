@@ -12,7 +12,7 @@
 #include "headers/matrix_operations.h"
 #include "headers/global.h"
 #include "headers/solver.h"
-//#include "headers/export.h"
+#include "headers/export.h"
 
 extern int nTotalNodes;
 extern int nTotalElements;
@@ -31,7 +31,7 @@ int main (int argc, char *argv[]){
   int (*assemblyMatrix)(double ***, double ***, node ***, element ***);
   int (*solve)(double **, double ***,int);
   int (*atualizeNodes)(double *, node **);
-  int (*exportAnswer)(node **);
+  int (*exportAnswer)(char *, element ***, node ***);
    
   
     elements=malloc(sizeof(element *));
@@ -44,7 +44,8 @@ int main (int argc, char *argv[]){
     generateElements=&generateElementsN;
     assemblyMatrix=&commomAssembly;
     solve=&gaussSeidel;
-
+    exportAnswer=&exportForFile;
+    
     if(importMesh("input.inp", &nodes, &elements)<0)
         return(-1);
     
@@ -66,6 +67,22 @@ int main (int argc, char *argv[]){
     printMatrix(globalAnsVector,nTotalNodes,1);
     
     printMesh(elements, nodes);
+    
+    if(exportAnswer("respostas.ans",&elements,&nodes)<0)
+        return(-1);
+    
+    
+    if(freeElements(&elements,nTotalElements) || freeNodes(&nodes, nTotalNodes))
+        return(-1);
+    
+    //libera as matrizes alocadas dinamicamente
+    //if(freeMatrix(globalMatrix,nTotalNodes)<0)
+    //    return(-1);
+    
+    free(elements);
+    free(nodes);
+    free(globalAnsVector);
+    free(globalMatrix);
     
     return(0);
 }

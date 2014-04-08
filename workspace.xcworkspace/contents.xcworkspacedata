@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:main.c">
+   </FileRef>
+   <FileRef
+      location = "group:headers/elements_nodes.h">
+   </FileRef>
+   <FileRef
+      location = "group:headers/export.h">
+   </FileRef>
+   <FileRef
+      location = "group:headers/global.h">
+   </FileRef>
+   <FileRef
+      location = "group:headers/import.h">
+   </FileRef>
+   <FileRef
+      location = "group:headers/matrix_operations.h">
+   </FileRef>
+   <FileRef
+      location = "group:headers/solver.h">
+   </FileRef>
+   <FileRef
+      location = "group:src/elements_nodes.c">
+   </FileRef>
+   <FileRef
+      location = "group:src/global.c">
+   </FileRef>
+   <FileRef
+      location = "group:src/import.c">
+   </FileRef>
+   <FileRef
+      location = "group:src/matrix_operations.c">
+   </FileRef>
+   <FileRef
+      location = "group:src/solver.c">
+   </FileRef>
+   <FileRef
+      location = "container:src/export.c">
+   </FileRef>
+</Workspace>

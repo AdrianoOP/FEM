@@ -13,3 +13,5 @@ int printMatrix(double **m,int i_max,int j_max);
 double max1d(double *v, int size);
 
 double min1d(double *v, int size);
+
+int freeMatrix(double **m,int imax);

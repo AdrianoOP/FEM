@@ -134,3 +134,34 @@ int findLocalNodePos(element *e, node *no_global){
     }
     return(-1);
 }
+
+
+int freeNodes(node ***n, int size){
+    int i,j,k;
+    
+    for(i=0;i<size;i++){
+        if((*n)[i]->val!=NULL)
+            free((*n)[i]->val);
+        if((*n)[i]->elements!=NULL){
+            free((*n)[i]->elements);
+        }
+        if((*n)[i]!=NULL){
+            free((*n)[i]);
+        }
+    }
+    return(0);
+}
+
+
+int freeElements(element ***e, int size){
+    int i,j,k;
+    
+    for(i=0;i<size;i++){
+        if((*e)[i]!=NULL){
+            free((*e)[i]);
+        }
+    }
+    return(0);
+}
+
+
