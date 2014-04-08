@@ -135,6 +135,15 @@ int findLocalNodePos(element *e, node *no_global){
     return(-1);
 }
 
+int findGlobalNodeIntoElement(element *e, node **no_global,int localNode){
+    int i,j,k;
+    for(i=0;i<nTotalNodes;i++){
+        if(e->no[localNode]==no_global[i])
+            return(i+1);
+    }
+    return(-1);
+}
+
 
 int freeNodes(node ***n, int size){
     int i,j,k;

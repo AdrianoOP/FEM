@@ -40,6 +40,7 @@ int hasElement(node n, element *e);
 
 int findLocalNodePos(element *e, node *no_global);
 
+int findGlobalNodeIntoElement(element *e, node **no_global,int localNode);
 
 int freeNodes(node ***n, int size);
 

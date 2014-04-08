@@ -6,6 +6,9 @@ MAIN=main.c
 clean:
 	rm -rf *~ *# headers/*~  headers/*#  src/*~  src/*#  docs/*~ docs/*# *.out *.o
 
+cans: clean
+	rm -rf *.ans
+
 all:  global elements_nodes import solver export matrix_operations
 	gcc $(MAIN) import.o global.o elements_nodes.o solver.o matrix_operations.o export.o -o main
 
