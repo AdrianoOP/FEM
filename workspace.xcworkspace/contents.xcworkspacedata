@@ -2,7 +2,16 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:pos_processor.c">
+   </FileRef>
+   <FileRef
+      location = "group:makefile">
+   </FileRef>
+   <FileRef
       location = "group:main.c">
+   </FileRef>
+   <FileRef
+      location = "group:headers/physics/electrostatics.h">
    </FileRef>
    <FileRef
       location = "group:headers/elements_nodes.h">
@@ -39,5 +48,8 @@
    </FileRef>
    <FileRef
       location = "container:src/export.c">
+   </FileRef>
+   <FileRef
+      location = "group:src/physics/electrostatics.c">
    </FileRef>
 </Workspace>

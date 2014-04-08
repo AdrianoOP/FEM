@@ -25,7 +25,7 @@ int printMatrix(double **m,int i_max,int j_max){
     for(i=0;i<i_max;i++){
         printf("|\t");
         for(j=0;j<j_max;j++){
-            printf("%.2f\t",m[i][j]);
+            printf("%.3e\t",m[i][j]);
         }
         printf("|\n");
     }

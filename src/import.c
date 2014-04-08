@@ -183,7 +183,11 @@ int createElement(char *buff, element *e,int pos, node **n){
     while(1){
         if(buff[i]=='\0'){
             dtemp=atof(buff2);
-            e->eps=EPSILONO*dtemp;
+            if(dtemp>1e-3){
+                e->eps=EPSILONO*dtemp;
+            }else{
+                e->eps=dtemp;
+            }
             return(1);
         }
         if(buff[i]==' '){

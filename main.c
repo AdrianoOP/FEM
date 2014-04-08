@@ -24,6 +24,9 @@ int main (int argc, char *argv[]){
   double **globalMatrix;//matriz global de coeficientes
   double **globalAnsVector;//Vetor global de respostas
     char buff[256];
+    
+    time_t ti,tf;
+    
   //declaracao das funcoes principais em ordem de execucao
     int (*importMesh)(char *, node ***, element ***); //aqui as condicoes de contorno devem ser aplicadas
     int (*generateElements)(element ***); //aqui deverao ser calculados os parametros p,q,r,D
@@ -46,8 +49,12 @@ int main (int argc, char *argv[]){
     solve=&gaussSeidel;
     exportAnswer=&exportForFile;
     
+    ti=time(0);
     if(importMesh("input.inp", &nodes, &elements)<0)
         return(-1);
+    tf=time(0);
+    sprintf(&buff,"Tempo para importacao da malha: %e (ns)\n",difftime(ti,tf)*1e9);
+    pMsg(buff);
     
     if(generateElements(&elements)<0)
         return(-1);
@@ -60,8 +67,12 @@ int main (int argc, char *argv[]){
     printf("\nmatriz problema:\n");
     printMatrix(globalMatrix,nTotalNodes,nTotalNodes);
     
+    time(&ti);
     if(solve(globalMatrix,&globalAnsVector,nTotalNodes)<0)
         return(-1);
+    time(&tf);
+    sprintf(&buff,"Tempo para solucionar o problema: %e (ns)\n",difftime(ti,tf)*1e9);
+    pMsg(buff);
     
     printf("\nVetor Solucoes:\n");
     printMatrix(globalAnsVector,nTotalNodes,1);

@@ -2,6 +2,11 @@ HEADERS=headers
 SOURCES=src
 LIBS=libs
 MAIN=main.c
+POS=pos_processor
+ELECTROSTATICS=electrostatics
+PHYSICSO=$(ELECTROSTATICS).o
+PHYSICS=$(ELECTROSTATICS)
+
 
 clean:
 	rm -rf *~ *# headers/*~  headers/*#  src/*~  src/*#  docs/*~ docs/*# *.out *.o
@@ -9,7 +14,7 @@ clean:
 cans: clean
 	rm -rf *.ans
 
-all:  global elements_nodes import solver export matrix_operations
+mainp:  global elements_nodes import solver export matrix_operations
 	gcc $(MAIN) import.o global.o elements_nodes.o solver.o matrix_operations.o export.o -o main
 
 import: $(HEADERS)/import.h $(SOURCES)/import.c
@@ -29,4 +34,9 @@ solver: $(HEADERS)/solver.h $(SOURCES)/solver.c
 
 export: $(HEADERS)/export.h $(SOURCES)/export.c
 	gcc $(SOURCES)/export.c -c -o export.o
+    
+$(POS): global elements_nodes import export matrix_operations $(PHYSICS)
+	gcc $(POS).c import.o global.o elements_nodes.o matrix_operations.o export.o $(PHYSICSO) -o $(POS)
 
+$(ELECTROSTATICS): $(HEADERS)/physics/$(ELECTROSTATICS).h $(SOURCES)/physics/$(ELECTROSTATICS).c
+	gcc $(SOURCES)/physics/$(ELECTROSTATICS).c -c -o $(ELECTROSTATICS).o
