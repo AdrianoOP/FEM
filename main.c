@@ -90,8 +90,8 @@ int main (int argc, char *argv[]){
         return(-1);
     
     //libera as matrizes alocadas dinamicamente
-    //if(freeMatrix(globalMatrix,nTotalNodes)<0)
-    //    return(-1);
+    if(freeMatrix(globalMatrix,nTotalNodes)<0)
+        return(-1);
     
     free(elements);
     free(nodes);

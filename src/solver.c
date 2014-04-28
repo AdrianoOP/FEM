@@ -19,6 +19,7 @@ int commomAssembly(double ***c, double ***v, node ***n, element ***e){
     int i,j,k;
     int local_pos1, local_pos2;
     double acumulator;
+    *c=realloc(*c,nTotalNodes*sizeof(double *));
     *v=realloc(*v,nTotalNodes*sizeof(double *));
     if((*v)==NULL)
         return(alocationMemoryError());
@@ -41,7 +42,7 @@ int commomAssembly(double ***c, double ***v, node ***n, element ***e){
             (*n)[i]->val=malloc(sizeof(double));
             if((*n)[i]->val==NULL)
                 return(alocationMemoryError());
-            *((*n)[i]->val)=0.0; // matriz de solucao recebe o endereco do node
+            *((*n)[i]->val)=0.0;
             (*v)[i]=(*n)[i]->val; // matriz de solucao recebe o endereco do node
             for(j=0;j<nTotalNodes;j++){
                 //cria os coeficientes para cada linha
@@ -61,8 +62,6 @@ int commomAssembly(double ***c, double ***v, node ***n, element ***e){
                         (*c)[i][j]=(*c)[i][j]+acumulator;
                     }
                 }
-                if((*c)[i][j]<=1e-100 && (*c)[i][j]>=-1e-100)
-                    (*c)[i][j]=0.0;
             }
         }
     }
@@ -119,13 +118,13 @@ int gaussSeidel(double **m, double ***ans,int size){
                 if((*ans)[i]==NULL){
                     (*ans)[i]=malloc(sizeof(double));
                 }
-                (*ans)[i][0]=x_est2[i];
+                *((*ans)[i])=x_est2[i];
             }
             break;
         }
     }
     for(i=0;i<nTotalNodes;i++){
-        (*ans)[i][0]=x_est2[i];
+        *((*ans)[i])=x_est2[i];
     }
     sprintf(&buff,"convergencia em %d iteracoes\n",it);
     pMsg(&buff);
