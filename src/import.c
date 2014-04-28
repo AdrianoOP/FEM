@@ -16,7 +16,7 @@ extern int nTotalElements;
 
 
 int importMeshFromFile(char *filename, node ***n, element ***e){
-    char buf[256], buf2[256];
+    char buf[256]="", buf2[256]="";
     char temp;
     FILE *fp;
     int i,j,k,l,m,o;
@@ -37,8 +37,9 @@ int importMeshFromFile(char *filename, node ***n, element ***e){
     m=1000;
     while(1){
         temp=fgetc(fp);
-        if(temp<0)
+        if(temp<0){
             break;
+        }
         if(temp==':'){
             buf2[j]='\0';
             j=0;
@@ -61,13 +62,14 @@ int importMeshFromFile(char *filename, node ***n, element ***e){
             }
         }
         if(temp=='\n'){
-            if(j<3){
+            if(j<5){
                 //linha em branco
                 j=0;
                 continue;
             }
             //else
             buf2[j]=temp;
+            buf2[j+1]='\0';
             j=0;
             if(m==1){//esta sendo lido o no
                 *n=realloc(*n,k*sizeof(node *));
@@ -82,6 +84,9 @@ int importMeshFromFile(char *filename, node ***n, element ***e){
                     if((*n)[k-1]->val!=NULL){
                         sprintf(&buf,"node %d: x=%f y=%f val=%f\n",k,(*n)[k-1]->x,(*n)[k-1]->y,*((*n)[k-1]->val));
                         pMsg(buf);
+                    }else{
+                        sprintf(&buf,"node %d: x=%f y=%f val=null\n",k,(*n)[k-1]->x,(*n)[k-1]->y);
+                        pMsg(buf);
                     }
                     k++;
                     continue;
@@ -94,19 +99,22 @@ int importMeshFromFile(char *filename, node ***n, element ***e){
                 *e=realloc(*e,k*sizeof(element *));
                 if(*e==NULL)
                     return(alocationMemoryError());
+                
                 (*e)[k-1]=(element *)malloc(sizeof(element));
                 if((*e)[k-1]==NULL)
                     return(alocationMemoryError());
                 
-                if(createElement(buf2,(*e)[k-1],k,*n)>0){
-                    sprintf(&buf,"element %d: no1=%f no2=%f no3=%f eps=%f\n",k,(*e)[k-1]->no[0]->x,(*e)[k-1]->no[1]->x,(*e)[k-1]->no[2]->x,(*e)[k-1]->eps);
+                if(createElement(&buf2,(*e)[k-1],k,*n)>0){
+                    sprintf(&buf,"element %d: no1=%f no2=%f no3=%f\n",k,(*e)[k-1]->no[0]->x,(*e)[k-1]->no[1]->x,
+                            (*e)[k-1]->no[2]->x);
                     pMsg(buf);
+                    k++;
+                    continue;
                 }else{
                     sprintf(&buf, "erro ao definir o elemento %d em importMesh\n",k);
                     pMsg(buf);
                     return(-1);
                 }
-                k++;
             }
         }
         buf2[j]=temp;
@@ -119,7 +127,7 @@ int importMeshFromFile(char *filename, node ***n, element ***e){
 }
 
 int createNode(char *buff, node *n, int pos){
-    char buff2[200];
+    char buff2[200]="";
     char temp;
     int i,j,k;
     double dtemp;
@@ -128,50 +136,52 @@ int createNode(char *buff, node *n, int pos){
     i=0;j=0;k=0;
     while(1){
         if(buff[i]=='\0'){
+            n->n_elements=0;
             buff2[j]=buff[i];
-            if(strcmp(buff2,"null")<=0){
-                n->val=(double *)malloc(sizeof(double));
+            if(strcmp(buff2,"null")<=0){//caso nao seja null
+                n->val=malloc(sizeof(double));
                 if(n->val==NULL)
                     return(alocationMemoryError());
-                dtemp=atof(buff2);
-                *(n->val)=dtemp;
-                n->n_elements=0;
+                dtemp=(double)atof(buff2);
+                *(n->val)=(double)dtemp;
             }else{
                 n->val=NULL;
             }
+            clearBuff2(buff,256);
             return(1);
         }
         if(buff[i]==' '){
+            //printf("buff2=%s x=%f y=%f\n",buff2,n->x,n->y);
             switch(k){
                 case 0:
                     j=0;
-                    n->x=atof(buff2);
+                    n->x=(double)atof(buff2);
                     i++;//pula o caractere de espaco
                     k++;
-                    clearBuff(buff2);
                     break;
                 case 1:
-                    n->y=atof(buff2);
+                    n->y=(double)atof(buff2);
                     j=0;
                     i++; //pula o caractere de espaco
                     k++;
-                    clearBuff(buff2);
                     break;
                 default:
                     pMsg("erro ao ler K em createNode\n");
                     break;
             }
+            clearBuff2(buff2,200);
             continue;
         }
         buff2[j]=buff[i];
         j++;
         i++;
     }
+    clearBuff2(buff,256);
     return(1);
 }
 
 int createElement(char *buff, element *e,int pos, node **n){
-    char buff2[200];
+    char buff2[200]="";
     char temp;
     int i,j,k;
     int itemp;
@@ -182,12 +192,13 @@ int createElement(char *buff, element *e,int pos, node **n){
     i=0;j=0;k=0;
     while(1){
         if(buff[i]=='\0'){
-            dtemp=atof(buff2);
+            dtemp=(double)atof(buff2);
             if(dtemp>1e-3){
-                e->eps=EPSILONO*dtemp;
+                e->eps=(double)EPSILONO*dtemp;
             }else{
-                e->eps=dtemp;
+                e->eps=(double)dtemp;
             }
+            clearBuff2(buff,256);
             return(1);
         }
         if(buff[i]==' '){
@@ -197,6 +208,7 @@ int createElement(char *buff, element *e,int pos, node **n){
                     itemp=atoi(buff2);
                     if(addElementToNode(n[itemp-1], e)<0)
                         return(-1);
+                    
                     e->no[0]=n[itemp-1];
                     i++;//pula o caractere de espaco
                     k++;
@@ -206,6 +218,7 @@ int createElement(char *buff, element *e,int pos, node **n){
                     itemp=atoi(buff2);
                     if(addElementToNode(n[itemp-1], e)<0)
                         return(-1);
+                    
                     e->no[1]=n[itemp-1];
                     j=0;
                     i++; //pula o caractere de espaco
@@ -233,13 +246,21 @@ int createElement(char *buff, element *e,int pos, node **n){
         j++;
         i++;
     }
+    clearBuff2(buff,256);
     return(1);
 }
 
 
 int clearBuff(char *buff){
     int i=0;
-    for(i=0;i<20;i++){
+    for(i=0;i<40;i++){
+        buff[i]='\0';
+    }
+}
+
+int clearBuff2(char *buff,int size){
+    int i=0;
+    for(i=0;i<size;i++){
         buff[i]='\0';
     }
 }
@@ -247,7 +268,7 @@ int clearBuff(char *buff){
 int addElementToNode(node *n, element *e){
     char buff[200];
     int i;
-    if(n->elements==NULL || n->n_elements==0){
+    if(n->elements==NULL || n->n_elements<1){
         n->elements=(element **)malloc(sizeof(element *));
         if(n->elements==NULL)
             return(alocationMemoryError());
@@ -255,7 +276,7 @@ int addElementToNode(node *n, element *e){
         n->n_elements=1;
     }else{
         n->n_elements++;
-        n->elements=(element **)realloc(n->elements,(n->n_elements)*sizeof(element *));
+        n->elements=realloc(n->elements,(n->n_elements)*sizeof(element *));
         if(n->elements==NULL)
             return(alocationMemoryError());
         n->elements[n->n_elements-1]=e;

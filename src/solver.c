@@ -9,7 +9,7 @@
 #include "../headers/matrix_operations.h"
 #include "../headers/global.h"
 
-#define MAXITERATIONS 10000
+#define MAXITERATIONS 100000
 #define MINERROR 1e-6
 
 extern int nTotalElements;
@@ -19,22 +19,33 @@ int commomAssembly(double ***c, double ***v, node ***n, element ***e){
     int i,j,k;
     int local_pos1, local_pos2;
     double acumulator;
-    (*v)=malloc(nTotalNodes*sizeof(double *));
+    *v=realloc(*v,nTotalNodes*sizeof(double *));
+    if((*v)==NULL)
+        return(alocationMemoryError());
     for(i=0;i<nTotalNodes;i++){
         (*c)[i]=malloc(nTotalNodes*sizeof(double));
-        (*v)[i]=(*n)[i]->val; // matriz de solucao recebe o endereco do node
+        if((*c)[i]==NULL)
+            return(alocationMemoryError());
+        
+        (*v)[i]=malloc(sizeof(double));
+        if((*v)[i]==NULL)
+            return(alocationMemoryError());
+        
         if((*n)[i]->val!=NULL){ //caso seja condicao de contorno de dirichlet
+            (*v)[i]=(*n)[i]->val; // matriz de solucao recebe o endereco do node
             for(j=0;j<nTotalNodes;j++){
                 //seta 1 para o termo j=i e zera o resto da linha
                 (*c)[i][j] = (i!=j) ? 0.0 : 1.0;
             }
         }else{ //caso a condicao seja newman
-            (*v)[i]=malloc(sizeof(double));
-            *((*v)[i])=0;
-            (*n)[i]->val=(*v)[i]; // matriz de solucao recebe o endereco do node
+            (*n)[i]->val=malloc(sizeof(double));
+            if((*n)[i]->val==NULL)
+                return(alocationMemoryError());
+            *((*n)[i]->val)=0.0; // matriz de solucao recebe o endereco do node
+            (*v)[i]=(*n)[i]->val; // matriz de solucao recebe o endereco do node
             for(j=0;j<nTotalNodes;j++){
                 //cria os coeficientes para cada linha
-                (*c)[i][j]=0;
+                (*c)[i][j]=0.0;
                 for(k=0;k<(*n)[i]->n_elements;k++){
                     //procura todos os elementos que tem relacao com o no em questao
                     local_pos1=findLocalNodePos((*n)[i]->elements[k],(*n)[i]);//procura a posicao local do no dentro do elemento
@@ -50,6 +61,8 @@ int commomAssembly(double ***c, double ***v, node ***n, element ***e){
                         (*c)[i][j]=(*c)[i][j]+acumulator;
                     }
                 }
+                if((*c)[i][j]<=1e-100 && (*c)[i][j]>=-1e-100)
+                    (*c)[i][j]=0.0;
             }
         }
     }
@@ -70,14 +83,20 @@ int gaussSeidel(double **m, double ***ans,int size){
     //formar os vetores e matrizes iniciais do problema
     for(i=0;i<size;i++){
         div=m[i][i];
-        for(j=0;j<size;j++){
-            if(i==j){
-                g[i]=(*(*ans)[i])/div;
-                x_est1[i]=g[i];
-                m[i][j]=0;
-            }else{
-                m[i][j]=-m[i][j]/div;
+        if(div!=0){
+            for(j=0;j<size;j++){
+                if(i==j){
+                    g[i]=(*ans)[i][0]/div;
+                    x_est1[i]=g[i];
+                    m[i][j]=0.0;
+                }else{
+                    m[i][j]=-m[i][j]/div;
+                }
             }
+        }else{
+            g[i]=(*ans)[i][0]/div;
+            x_est1[i]=g[i];
+            m[i][j]=0.0;
         }
     }
     //executa o metodo fazendo:
@@ -85,7 +104,7 @@ int gaussSeidel(double **m, double ***ans,int size){
     for(it=0;it<MAXITERATIONS;it++){
         //para cada iteracao
         for(i=0;i<size;i++){
-            x_est2[i]=0;
+            x_est2[i]=0.0;
             for(j=0;j<size;j++){
                 x_est2[i]=x_est2[i]+x_est1[j]*m[i][j];
             }
@@ -97,15 +116,19 @@ int gaussSeidel(double **m, double ***ans,int size){
         //checa criterio de parada
         if(max1d(d,nTotalNodes)<MINERROR){
             for(i=0;i<nTotalNodes;i++){
-                if((*ans)[i]==NULL)
+                if((*ans)[i]==NULL){
                     (*ans)[i]=malloc(sizeof(double));
-                *((*ans)[i])=x_est2[i];
+                }
+                (*ans)[i][0]=x_est2[i];
             }
-            sprintf(&buff,"convergencia em %d iteracoes\n",it);
-            pMsg(&buff);
             break;
         }
     }
+    for(i=0;i<nTotalNodes;i++){
+        (*ans)[i][0]=x_est2[i];
+    }
+    sprintf(&buff,"convergencia em %d iteracoes\n",it);
+    pMsg(&buff);
     free(x_est1);
     free(x_est2);
     free(g);

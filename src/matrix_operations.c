@@ -5,6 +5,7 @@
 /********************************************/
 
 #include <stdlib.h>
+#include <math.h>
 #include "../headers/elements_nodes.h"
 #include "../headers/matrix_operations.h"
 #include "../headers/global.h"
@@ -23,9 +24,9 @@ double calculateDeterminant(double m[3][3]){
 int printMatrix(double **m,int i_max,int j_max){
     int i,j;
     for(i=0;i<i_max;i++){
-        printf("|\t");
+        printf("| ");
         for(j=0;j<j_max;j++){
-            printf("%.3e\t",m[i][j]);
+            printf("%.1e ",m[i][j]);
         }
         printf("|\n");
     }

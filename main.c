@@ -60,7 +60,6 @@ int main (int argc, char *argv[]){
     exportAnswer=&exportForFile;
   
     
-    
     if(importMesh(importFile, &nodes, &elements)<0)
         return(-1);
     

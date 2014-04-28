@@ -51,7 +51,6 @@ int main (int argc, char *argv[]){
         return(-1);
     
     printMesh(elements, nodes);
-    
     if(calculateEfields(&elements,&Ex,&Ey)<0)
         return(-1);
     
@@ -61,6 +60,15 @@ int main (int argc, char *argv[]){
     printf("Ey (V/m):\n");
     printMatrix(&Ey,1,nTotalElements);
     
+    if(argc>2){
+        double x,y;
+        x=atof(argv[1]);
+        y=atof(argv[2]);
+        printf("\n\no ponto P(%f,%f) ",x,y);
+        printf("tem potencial %.3e\n\n",VonPoint(&elements,x,y));
+    }else{
+        
+    }
     if(freeElements(&elements,nTotalElements) || freeNodes(&nodes, nTotalNodes))
         return(-1);
     

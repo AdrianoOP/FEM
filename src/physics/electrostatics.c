@@ -29,3 +29,15 @@ int calculateEfields(element ***e, double **Ex, double **Ey){
     }
     return(0);
 }
+
+double VonPoint(element ***e,double x, double y){
+    int i;
+    double V;
+    i=findElementOfPoint(e,x,y);
+    if(i<0)
+        return(-1000);
+    V=phiFunction((*e)[i],x,y,1)*(*((*e)[i]->no[0]->val))+
+        phiFunction((*e)[i],x,y,2)*(*((*e)[i]->no[1]->val))+
+        phiFunction((*e)[i],x,y,3)*(*((*e)[i]->no[2]->val));
+    return(V);
+}

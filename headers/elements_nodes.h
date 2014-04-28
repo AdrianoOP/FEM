@@ -73,3 +73,7 @@ int generateElementsN(element ***e);
 int printMesh(element **e, node **n);
 
 int freeElements(element ***e, int size);
+
+double phiFunction(element *e, double x, double y,int index);
+
+int findElementOfPoint(element ***e, double x, double y);

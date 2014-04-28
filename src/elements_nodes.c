@@ -5,6 +5,7 @@
 /********************************************/
 
 #include <stdlib.h>
+#include <math.h>
 #include "../headers/elements_nodes.h"
 #include "../headers/matrix_operations.h"
 
@@ -12,13 +13,6 @@ extern int nTotalElements;
 extern int nTotalNodes;
 
 //----Funcoes elements-----
-
-/********************/
-/* function: dist   */
-/* input arg: node n, double x, double y */
-/* output arg: double R */
-/* description: retorna a distancia geometrica entre o node n e o ponto P(x,y)*/
-double dist(node n, double x, double y);
 
 /********************/
 /* function: hasElement   */
@@ -111,7 +105,7 @@ int printMesh(element **e, node **n){
         printf("node %d: ",i+1);
         printf("P(%3.3f, %3.3f) ",n[i]->x,n[i]->y);
         if((n[i]->val)!=NULL){
-            printf("V=%f",*(n[i]->val));
+            printf("V=%e",*(n[i]->val));
         }else{
             printf("V=null");
         }
@@ -171,6 +165,34 @@ int freeElements(element ***e, int size){
         }
     }
     return(0);
+}
+
+double dist(node n, double x, double y){
+    return(sqrt(((n.x-x)*(n.x-x))+((n.y-y)*(n.y-y))));
+}
+
+int findElementOfPoint(element ***e, double x, double y){
+    int i,j,k;
+    for(i=0;i<nTotalElements;i++){
+        //printf("element %d\n",i);
+        if(phiFunction((*e)[i],x,y,1)<0 || phiFunction((*e)[i],x,y,1)>1)
+            continue;
+        if(phiFunction((*e)[i],x,y,2)<0 || phiFunction((*e)[i],x,y,2)>1)
+            continue;
+        if(phiFunction((*e)[i],x,y,3)<0 || phiFunction((*e)[i],x,y,3)>1)
+            continue;
+        return(i);
+    }
+    return(-1);
+}
+
+double phiFunction(element *e, double x, double y,int index){
+    if(index>0 && index<4){
+        index=index-1;
+        return((1/(e->D))*(e->p[index]+e->q[index]*x+e->r[index]*y));
+    }
+    else
+        return(-1000);
 }
 
 
